@@ -11,6 +11,13 @@ GRANT INSERT ON saas_firewall_db.Alertas TO 'rol_analista'@'localhost';
 GRANT INSERT, UPDATE ON saas_firewall_db.Reportes TO 'rol_analista'@'localhost'; 
 GRANT INSERT ON saas_firewall_db.Auditoria TO 'rol_analista'@'localhost'; 
 
--- GRANT INSERT ON saas_firewall_db.Logs_Firewall TO 'rol_analista'@'localhost';  <<Este es un permiso que no sé si dejar>>
+-- Permisos para rol_invitado
+GRANT SELECT ON saas_firewall_db.Usuarios TO 'rol_invitado'@'localhost';
+GRANT SELECT ON saas_firewall_db.Roles TO 'rol_invitado'@'localhost';
+GRANT SELECT ON saas_firewall_db.IPs TO 'rol_invitado'@'localhost';
+GRANT INSERT ON saas_firewall_db.Alertas TO 'rol_invitado'@'localhost';
+GRANT SELECT ON saas_firewall_db.Vista_1 TO 'rol_invitado'@'localhost';
+GRANT SELECT ON saas_firewall_db.Vista_4 TO 'rol_invitado'@'localhost';
+GRANT EXECUTE ON PROCEDURE saas_firewall_db.SP_ObtenerLogsPorUsuario TO 'rol_invitado'@'localhost';
 
-
+FLUSH PRIVILEGES;
