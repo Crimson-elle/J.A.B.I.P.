@@ -39,7 +39,7 @@ class AnalistaView:
                     app.result_frame,
                     text=text,
                     anchor="w",
-                    font=("Arial", 10)
+                    font=("Arial", 13)
                 )
                 label.pack(pady=2, padx=10, fill="x")
                     
@@ -139,7 +139,7 @@ class AnalistaView:
                     app.result_frame,
                     text=text,
                     anchor="w",
-                    font=("Arial", 10)
+                    font=("Arial", 13)
                 )
                 label.pack(pady=2, padx=10, fill="x")
                 
