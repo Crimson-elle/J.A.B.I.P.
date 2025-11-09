@@ -141,3 +141,4 @@ if __name__ == "__main__":
         print(f"\nLogs del usuario: {len(logs)} registros")
         
         db_invitado.disconnect()
+        db_invitado.disconnect()
