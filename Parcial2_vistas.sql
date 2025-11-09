@@ -27,4 +27,21 @@ JOIN Dispositivos D ON U.id_usuario = D.id_responsable -- El usuario es responsa
 JOIN IPs I ON D.id_dispositivo = I.id_dispositivo;     -- El dispositivo tiene una IP asignada
 GRANT SELECT ON saas_firewall_db.Vista_4 TO 'rol_invitado'@'localhost';
 
+-- 1. Eliminar la vista antigua
+DROP VIEW IF EXISTS Vista_4;
+
+-- 2. Recrear la vista con LEFT JOIN para incluir TODAS las IPs, incluso si no tienen usuario/dispositivo asignado
+CREATE VIEW Vista_4 AS
+SELECT
+    -- COALESCE para mostrar "Desconocido" si no hay usuario/dispositivo
+    COALESCE(U.nombre_usuario, 'SIN RESPONSABLE') AS nombre_usuario,
+    COALESCE(D.nombre_activo, 'SIN ASIGNAR') AS Dispositivo_Activo,
+    I.direccion_ip,
+    I.estado AS Estado_IP
+FROM IPs I
+LEFT JOIN Dispositivos D ON I.id_dispositivo = D.id_dispositivo 
+LEFT JOIN Usuarios U ON D.id_responsable = U.id_usuario; 
+
+
+
 
