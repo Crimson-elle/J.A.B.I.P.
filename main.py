@@ -138,6 +138,16 @@ class FirewallApp:
             text_color=btn_colors.get("text_color", None),
         )
         
+        # Botón Gestión de IPs
+        self.ip_management_button = customtkinter.CTkButton(
+            self.options_frame,
+            text="Gestionar IPs",
+            command=self.show_ip_management,
+            fg_color=btn_colors.get("fg_color", colors.get("primary", None)),
+            hover_color=btn_colors.get("hover_color", None),
+            text_color=btn_colors.get("text_color", None),
+        )
+        
         # Botón Reportes
         self.reportes_button = customtkinter.CTkButton(
             self.options_frame,
@@ -399,6 +409,7 @@ class FirewallApp:
         self.reportes_button.pack_forget()
         self.alertas_button.pack_forget()
         self.logs_button.pack_forget()
+        self.ip_management_button.pack_forget()
         
         if self.current_role == "admin":
             self.login_button.configure(text="Cerrar Sesion")
@@ -407,6 +418,7 @@ class FirewallApp:
             self.logs_button.pack(pady=8, padx=20, fill="x")
             self.reportes_button.pack(pady=8, padx=20, fill="x")
             self.usuarios_button.pack(pady=8, padx=20, fill="x")
+            self.ip_management_button.pack(pady=8, padx=20, fill="x")
             
         elif self.current_role == "analista":
             self.login_button.configure(text="Cerrar Sesion")
@@ -460,7 +472,10 @@ class FirewallApp:
     # Analista 
     def show_alertas(self):
         #Muestra las alertas del sistema
-        AnalistaView.show_alertas(self)
+        if self.current_role == "admin":
+            AdminView.show_alertas_admin(self)
+        else:
+            AnalistaView.show_alertas(self)
     
     def show_logs(self):
         #Muestra los logs del firewall
@@ -474,6 +489,10 @@ class FirewallApp:
     def show_usuarios(self):
         #Muestra los usuarios del sistema (solo admin)
         AdminView.show_usuarios(self)
+    
+    def show_ip_management(self):
+        #Muestra la gestión completa de IPs (solo admin)
+        AdminView.show_ip_management(self)
     
     def on_closing(self):
         #Cierra la aplicación correctamente
