@@ -1,10 +1,14 @@
 import mysql.connector
+from mysql.connector.cursor import MySQLCursorDict
 from mysql.connector import Error
 import os
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, cast
+from mysql.connector.connection import MySQLConnection 
+from mysql.connector.cursor import MySQLCursor
 
 class DatabaseConnection:
     #Maneja la conexión a la base de datos MySQL
+
     
     def __init__(self):
         self.connection = None
@@ -26,11 +30,14 @@ class DatabaseConnection:
             )
             
             if self.connection.is_connected():
-                self.cursor = self.connection.cursor(dictionary=True)
+                self.cursor = self.connection.cursor(cursor_class=MySQLCursorDict)
                 db_info = self.connection.get_server_info()
                 print(f"✓ Conectado exitosamente a MySQL Server v{db_info}")
                 return True
                 
+            else:
+                print("✗ Error: Conexión establecida pero no activa.")
+                return False
         except Error as e:
             print(f"✗ Error al conectar a MySQL: {e}")
             return False
@@ -43,8 +50,11 @@ class DatabaseConnection:
             self.connection.close()
             print("✓ Conexión cerrada")
             
-    def execute_query(self, query: str, params: tuple = None) -> bool:
+    def execute_query(self, query: str, params: tuple | None = None) -> bool:
         #Ejecuta una query de modificación (INSERT, UPDATE, DELETE)
+        if not self.connection or not self.connection.is_connected() or not self.cursor:
+            print("✗ Error: No hay una conexión activa a la base de datos.")
+            return False
         try:
             if params:
                 self.cursor.execute(query, params)
@@ -55,11 +65,15 @@ class DatabaseConnection:
             return True
         except Error as e:
             print(f"✗ Error ejecutando query: {e}")
-            self.connection.rollback()
+            if self.connection:
+                self.connection.rollback()
             return False
             
-    def fetch_data(self, query: str, params: tuple = None) -> List[Dict[str, Any]]:
+    def fetch_data(self, query: str, params: Optional[tuple] = None) -> List[Dict[str, Any]]:
         
+        if not self.connection or not self.connection.is_connected() or not self.cursor:
+            print("✗ Error: No hay conexión o cursor activo para consultar datos.")
+            return [] # Devuelve una lista vacía si falla la conexión
         #Ejecuta una query de consulta (SELECT) y retorna los resultados
         try:
             if params:
@@ -67,22 +81,43 @@ class DatabaseConnection:
             else:
                 self.cursor.execute(query)
             results = self.cursor.fetchall()
+            # 2. Asegurar el tipo de retorno y manejar None
+            if results is None:
+                return [] # Si fetchall() devuelve None, retorna una lista vacía
+            
+        # 3. Cast implícito: Dado que usamos MySQLCursorDict, Pylance ahora lo acepta mejor.
+        
             return results
         except Error as e:
             print(f"✗ Error consultando datos: {e}")
             return []
             
-    def call_procedure(self, procedure_name: str, args: tuple = ()) -> List[Dict[str, Any]]:
+    def call_procedure(self, procedure_name: str, args: tuple | None = ()) -> List[Dict[str, Any]]:
         
+        if not self.connection or not self.connection.is_connected() or not self.cursor: 
+            print("✗ Error: No hay conexión o cursor activo para llamar a procedimiento.")
+            return []
         #Llama a un stored procedure
         try:
-            self.cursor.callproc(procedure_name, args)
+        # Usamos 'cast' para decirle a Pylance que self.cursor es definitivamente un MySQLCursorDict
+            cursor_dict = cast(MySQLCursorDict, self.cursor)
+        
+            cursor_dict.callproc(procedure_name, args) 
+        
             results = []
-            for result in self.cursor.stored_results():
-                results.extend(result.fetchall())
+        
+        # Usamos el cursor 'casteado' que Pylance reconoce
+            for result in cursor_dict.stored_results(): 
+                fetched_data = result.fetchall()
+                if fetched_data:
+                    results.extend(fetched_data)
+                
             return results
+        
         except Error as e:
             print(f"✗ Error llamando procedimiento: {e}")
+            if self.connection:
+                self.connection.rollback()
             return []
 
 def get_admin_connection() -> Optional[DatabaseConnection]:
@@ -140,5 +175,4 @@ if __name__ == "__main__":
         logs = db_invitado.call_procedure('SP_ObtenerLogsPorUsuario', (7,))
         print(f"\nLogs del usuario: {len(logs)} registros")
         
-        db_invitado.disconnect()
         db_invitado.disconnect()
