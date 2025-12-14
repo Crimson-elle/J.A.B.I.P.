@@ -34,7 +34,7 @@ BEGIN
         'Alertas',
         'INSERT',
         CONCAT('Nueva Alerta #', NEW.id_alerta, ' creada. Tipo: ', NEW.tipo_alerta, '. Gravedad: ', NEW.gravedad),
-        NEW.id_analista_asignado -- El analista asignado es quien inició el proceso o el sistema.
+        NEW.id_analista_asignado 
     );
 END; //
 DELIMITER ;
@@ -66,4 +66,5 @@ BEGIN
    
 END; //
 DELIMITER ;
+
 
