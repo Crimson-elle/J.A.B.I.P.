@@ -9,7 +9,8 @@ JOIN Usuarios U ON LF.id_usuario_origen = U.id_usuario
 JOIN Roles R ON U.id_rol = R.id_rol
 WHERE
     LF.accion = 'PERMITIDO'
-    AND R.nombre_rol = 'Analista' -- Filtrar por el rol que se desee
+    AND R.nombre_rol = 'Analista' 
 ORDER BY
     LF.fecha_log DESC
+
 LIMIT 10;
