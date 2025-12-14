@@ -1,11 +1,9 @@
-#Menú de Invitado
 import customtkinter
 
 class InvitadoView:
     
     @staticmethod
     def show_notificaciones(app):
-        #Muestra notificaciones de red para el usuario
         if not app.db:
             return
             
@@ -44,7 +42,6 @@ class InvitadoView:
                 )
                 msg.pack(pady=10, padx=20)
 
-                # Botón inline para solicitar acceso de red (solo visible si la IP no existe)
                 solicitar_btn = customtkinter.CTkButton(
                     app.result_frame,
                     text="Solicitar Acceso de Red",
@@ -107,7 +104,6 @@ class InvitadoView:
     
     @staticmethod
     def solicitar_acceso_ip(app):
-#Solicita acceso para la IP del usuario
         if not app.db:
             return
             
@@ -181,14 +177,11 @@ class InvitadoView:
 
     @staticmethod
     def _inline_solicitar_wrapper(app):
-        #Wrapper para usar el flujo existente y luego volver a mostrar notificaciones.
         InvitadoView.solicitar_acceso_ip(app)
-        # Después de procesar la solicitud vuelve a mostrar notificaciones para refrescar estado
         app.show_notificaciones()
     
     @staticmethod
     def show_blocked_message(app):
-        #Muestra mensaje si la IP está bloqueada.
         for widget in app.result_frame.winfo_children():
             widget.destroy()
         
@@ -209,7 +202,6 @@ class InvitadoView:
     
     @staticmethod
     def show_mis_datos(app):
-#Muestra los datos del usuario actual
         if not app.db:
             return
             
