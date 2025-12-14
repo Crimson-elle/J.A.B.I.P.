@@ -49,28 +49,27 @@ INSERT INTO Dispositivos (id_dispositivo, nombre_activo, tipo_dispositivo, ubica
 (18, 'Fotocopiadora 2', 'Impresora/MFD', 'Laboratorio 1', 17, 'A0:A1:A2:A3:A4:A5', 'Firmware', 'Baja');
 
 INSERT INTO IPs (id_ip, direccion_ip, estado, fecha_ultimo_visto, id_dispositivo) VALUES
-(1, '192.168.10.1', 'Confiable', NOW(), 1),  -- Main Gateway
-(2, '192.168.10.2', 'Confiable', NOW(), 2),  -- Network Switch
-(3, '192.168.10.10', 'Confiable', NOW(), 3), -- Internal DNS Server
-(4, '192.168.10.11', 'Confiable', NOW(), 4), -- Servidor de archivos
-(5, '192.168.10.12', 'Confiable', NOW(), 5), -- Backup Server
-(6, '192.168.10.20', 'Confiable', NOW(), 6),  -- PC Lider IT
-(7, '192.168.10.21', 'Confiable', NOW(), 7),  -- PC Contable
-(8, '192.168.10.22', 'Confiable', NOW(), 8),  -- PC IT Senior
-(9, '192.168.10.23', 'Confiable', NOW(), 9),  -- PC Director General
-(10, '192.168.10.30', 'Confiable', NOW(), 10), -- PC Administrativo
-(11, '192.168.20.5', 'Confiable', NOW(), 11), -- Secuenciador ADN
-(12, '192.168.20.6', 'Confiable', NOW(), 12), -- Mass Spectrometer
-(13, '192.168.20.7', 'Confiable', NOW(), 13), -- Centrifugo
-(14, '192.168.20.8', 'Confiable', NOW(), 14), -- Lector Microplates
-(15, '192.168.20.9', 'Confiable', NOW(), 15), -- Environmental Chamber
-(16, '192.168.30.2', 'Confiable', NOW(), 16), -- Panel control edificio
-(17, '192.168.30.10', 'Confiable', NOW(), 17), -- Fotocopiadora 1
-(18, '192.168.30.50', 'Confiable', NOW(), 18), -- Fotocopiadora 2
--- IPs Sospechosas / Bloqueadas / Externas (ID 19-21, NULL en Dispositivo)
-(19, '192.168.55.1', 'Sospechosa', NOW(), NULL), -- IP Privada ajena
-(20, '203.45.217.16', 'Maliciosa', NOW(), NULL), -- IP Externa conocida como maliciosa
-(21, '38.51.31.49', 'Maliciosa', NOW(), NULL),  -- IP Externa desconocida
+(1, '192.168.10.1', 'Confiable', NOW(), 1),  
+(2, '192.168.10.2', 'Confiable', NOW(), 2),  
+(3, '192.168.10.10', 'Confiable', NOW(), 3), 
+(4, '192.168.10.11', 'Confiable', NOW(), 4),
+(5, '192.168.10.12', 'Confiable', NOW(), 5), 
+(6, '192.168.10.20', 'Confiable', NOW(), 6), 
+(7, '192.168.10.21', 'Confiable', NOW(), 7),  
+(8, '192.168.10.22', 'Confiable', NOW(), 8),  
+(9, '192.168.10.23', 'Confiable', NOW(), 9), 
+(10, '192.168.10.30', 'Confiable', NOW(), 10), 
+(11, '192.168.20.5', 'Confiable', NOW(), 11), 
+(12, '192.168.20.6', 'Confiable', NOW(), 12), 
+(13, '192.168.20.7', 'Confiable', NOW(), 13), 
+(14, '192.168.20.8', 'Confiable', NOW(), 14),
+(15, '192.168.20.9', 'Confiable', NOW(), 15), 
+(16, '192.168.30.2', 'Confiable', NOW(), 16), 
+(17, '192.168.30.10', 'Confiable', NOW(), 17),
+(18, '192.168.30.50', 'Confiable', NOW(), 18), 
+(19, '192.168.55.1', 'Sospechosa', NOW(), NULL),
+(20, '203.45.217.16', 'Maliciosa', NOW(), NULL), 
+(21, '38.51.31.49', 'Maliciosa', NOW(), NULL), 
 (22, '0.0.0.0', 'Maliciosa', NOW(), NULL), 
 (23, '172.217.10.1', 'Sospechosa', NOW(), NULL),
 (24, '1.1.1.1', 'Maliciosa', NOW(), NULL),     
@@ -78,19 +77,19 @@ INSERT INTO IPs (id_ip, direccion_ip, estado, fecha_ultimo_visto, id_dispositivo
 
 
 INSERT INTO Logs_Firewall (id_log, fecha_log, accion, puerto_destino, id_ip, id_usuario_origen, id_usuario_analista) VALUES
-(1, '2025-10-01 08:05:00', 'PERMITIDO', 80, 6, 2, NULL),    -- PC Lider IT (Admin_seg)
-(2, '2025-10-01 09:10:00', 'PERMITIDO', 445, 4, 1, NULL),    -- Servidor Archivos (Admin BD)
-(3, '2025-10-01 13:00:00', 'PERMITIDO', 443, 7, 11, NULL),   -- PC Contable
-(4, '2025-10-01 17:45:00', 'PERMITIDO', 53, 3, 1, NULL),    -- DNS Server
-(5, '2025-10-01 21:30:00', 'PERMITIDO', 22, 8, 3, NULL),    -- PC IT Senior
-(6, '2025-10-02 08:35:00', 'PERMITIDO', 80, 9, 12, NULL),    -- PC Director
-(7, '2025-10-02 10:40:00', 'PERMITIDO', 8080, 11, 7, NULL),  -- Secuenciador
-(8, '2025-10-02 14:00:00', 'PERMITIDO', 25, 17, 10, NULL),   -- Fotocopiadora 1
-(9, '2025-10-02 19:15:00', 'PERMITIDO', 445, 4, 10, NULL),   -- PC Adm accede a archivos
-(10, '2025-10-03 09:05:00', 'PERMITIDO', 5000, 13, 14, NULL), -- Centrifugo
+(1, '2025-10-01 08:05:00', 'PERMITIDO', 80, 6, 2, NULL),    
+(2, '2025-10-01 09:10:00', 'PERMITIDO', 445, 4, 1, NULL),   
+(3, '2025-10-01 13:00:00', 'PERMITIDO', 443, 7, 11, NULL),   
+(4, '2025-10-01 17:45:00', 'PERMITIDO', 53, 3, 1, NULL),  
+(5, '2025-10-01 21:30:00', 'PERMITIDO', 22, 8, 3, NULL),  
+(6, '2025-10-02 08:35:00', 'PERMITIDO', 80, 9, 12, NULL),   
+(7, '2025-10-02 10:40:00', 'PERMITIDO', 8080, 11, 7, NULL), 
+(8, '2025-10-02 14:00:00', 'PERMITIDO', 25, 17, 10, NULL),  
+(9, '2025-10-02 19:15:00', 'PERMITIDO', 445, 4, 10, NULL),   
+(10, '2025-10-03 09:05:00', 'PERMITIDO', 5000, 13, 14, NULL),
 (11, '2025-10-03 12:20:00', 'PERMITIDO', 443, 7, 11, NULL),
 (12, '2025-10-03 16:30:00', 'PERMITIDO', 22, 8, 3, NULL),
-(13, '2025-10-03 20:00:00', 'PERMITIDO', 53, 16, 2, NULL),   -- Panel control edificio
+(13, '2025-10-03 20:00:00', 'PERMITIDO', 53, 16, 2, NULL),  
 (14, '2025-10-06 08:15:00', 'PERMITIDO', 80, 6, 2, NULL),
 (15, '2025-10-06 09:40:00', 'PERMITIDO', 445, 4, 1, NULL),
 (16, '2025-10-06 13:30:00', 'PERMITIDO', 443, 7, 11, NULL),
@@ -198,7 +197,6 @@ INSERT INTO Logs_Firewall (id_log, fecha_log, accion, puerto_destino, id_ip, id_
 (118, '2025-10-07 18:30:00', 'PERMITIDO', 5000, 13, 14, NULL),
 (119, '2025-10-08 18:30:00', 'PERMITIDO', 445, 4, 11, NULL),
 (120, '2025-10-09 18:30:00', 'PERMITIDO', 80, 6, 2, NULL),
--- Logs bloqueados por ataque
 (121, '2025-10-01 00:00:00', 'BLOQUEADO', 80, 22, NULL, NULL),    
 (122, '2025-10-02 11:35:00', 'BLOQUEADO', 3389, 20, NULL, 4),   
 (123, '2025-10-02 11:35:01', 'BLOQUEADO', 21, 20, NULL, 4),    
@@ -228,7 +226,6 @@ INSERT INTO Logs_Firewall (id_log, fecha_log, accion, puerto_destino, id_ip, id_
 (147, '2025-10-30 17:30:00', 'BLOQUEADO', 23, 25, NULL, NULL),
 (148, '2025-10-31 18:30:00', 'BLOQUEADO', 5900, 25, NULL, NULL),
 (149, '2025-10-16 09:30:00', 'BLOQUEADO', 137, 19, NULL, 3),  
--- Logs bloqueados por horario 
 (150, '2025-10-01 22:39:03', 'BLOQUEADO', 80, 6, 2, NULL),    
 (151, '2025-10-02 07:57:06', 'BLOQUEADO', 443, 7, 11, NULL),   
 (152, '2025-10-04 22:10:00', 'BLOQUEADO', 22, 8, 3, NULL),
@@ -265,17 +262,15 @@ INSERT INTO Logs_Firewall (id_log, fecha_log, accion, puerto_destino, id_ip, id_
 (183, '2025-10-30 19:00:00', 'BLOQUEADO', 8080, 22, NULL, NULL); 
 
 INSERT INTO Alertas (id_alerta, tipo_alerta, fecha_alerta, gravedad, estado, id_log, id_analista_asignado) VALUES
-(1, 'Tráfico 0.0.0.0 (Malicioso)', '2025-10-01 00:00:05', 'Crítica', 'En Progreso', 121, 3), -- Log 121: IP 22 (0.0.0.0)
-(2, 'Escaneo RDP/SMB (Persistente)', '2025-10-02 11:35:05', 'Alta', 'Pendiente', 122, 4),    -- Log 122: IP 20 
-(3, 'Fuerza Bruta SSH (Nueva IP)', '2025-10-03 14:30:05', 'Alta', 'Pendiente', 124, 5),   -- Log 124: IP 24 
-(4, 'Tráfico Fuera de Horario (Reincidente)', '2025-10-18 11:00:05', 'Baja', 'Cerrada', 165, 6),   -- Log 165: Bloqueo SÁBADO 
-(5, 'Patrón de Escaneo Desconocido', '2025-10-24 18:30:05', 'Media', 'Pendiente', 143, 4);   -- Log 143: IP 24 
-
+(1, 'Tráfico 0.0.0.0 (Malicioso)', '2025-10-01 00:00:05', 'Crítica', 'En Progreso', 121, 3),
+(2, 'Escaneo RDP/SMB (Persistente)', '2025-10-02 11:35:05', 'Alta', 'Pendiente', 122, 4),  
+(3, 'Fuerza Bruta SSH (Nueva IP)', '2025-10-03 14:30:05', 'Alta', 'Pendiente', 124, 5),  
+(4, 'Tráfico Fuera de Horario (Reincidente)', '2025-10-18 11:00:05', 'Baja', 'Cerrada', 165, 6),  
+(5, 'Patrón de Escaneo Desconocido', '2025-10-24 18:30:05', 'Media', 'Pendiente', 143, 4);  
 INSERT INTO Reportes (id_reporte, fecha_creacion, titulo, contenido, id_usuario_creador) VALUES
-(1, '2025-10-05', 'Reporte de bloqueos semanales (Oct 1-5)', 'El tráfico de fin de semana fue bloqueado correctamente. Se identificó tráfico de la IP 22 (0.0.0.0).', 6), -- Analista D
-(2, '2025-10-10', 'Revisión de ataques IP 20 y 24', 'Las IPs 20 y 24 están realizando ataques constantes. Se revisaron los logs 122 a 138. Se sugiere bloqueo permanente.', 4), -- Analista B
-(3, '2025-10-15', 'Informe de alerta crítica (0.0.0.0)', 'Se realizaron modificaciones en la configuración debido al tráfico de IP 0.0.0.0 (Log 121). La alerta #1 se mantiene En Progreso.', 3); -- Analista A
-
+(1, '2025-10-05', 'Reporte de bloqueos semanales (Oct 1-5)', 'El tráfico de fin de semana fue bloqueado correctamente. Se identificó tráfico de la IP 22 (0.0.0.0).', 6), 
+(2, '2025-10-10', 'Revisión de ataques IP 20 y 24', 'Las IPs 20 y 24 están realizando ataques constantes. Se revisaron los logs 122 a 138. Se sugiere bloqueo permanente.', 4), 
+(3, '2025-10-15', 'Informe de alerta crítica (0.0.0.0)', 'Se realizaron modificaciones en la configuración debido al tráfico de IP 0.0.0.0 (Log 121). La alerta #1 se mantiene En Progreso.', 3); 
 INSERT INTO Auditoria (id_auditoria, fecha, tabla_afectada, accion_realizada, detalle, id_usuario_sistema) VALUES
 (1, '2025-10-02 11:35:10', 'Alertas', 'INSERT', 'Alerta #2 (IP 20) generada automáticamente tras violación de umbral.', 4),
 (2, '2025-10-03 14:30:15', 'Alertas', 'INSERT', 'Alerta #3 (IP 24) creada por tráfico anómalo en puerto 22.', 5),
@@ -283,4 +278,3 @@ INSERT INTO Auditoria (id_auditoria, fecha, tabla_afectada, accion_realizada, de
 (4, '2025-10-15 09:00:00', 'Alertas', 'UPDATE', 'Se actualiza Alerta #1 a "En Progreso" y se asigna al Analista A.', 3),
 (5, '2025-10-18 12:00:00', 'Alertas', 'UPDATE', 'Alerta #4 cerrada después de confirmar bloqueo de fin de semana (Log 165).', 6),
 (6, '2025-10-24 18:35:00', 'Logs_Firewall', 'REGLA MODIFICADA', 'Se actualizó la regla 300 para mitigar ataques de IPs maliciosas.', 4);
-
