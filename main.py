@@ -36,14 +36,12 @@ class FirewallApp:
         self.current_role = "invitado"
         self.usuario_id = None
         self.user_ip = self.get_local_ip()
-        # Flag para controlar si la IP actual no está registrada
         self.ip_unregistered = False
         
         self.setup_ui()
         self.auto_connect_guest()
         
     def get_local_ip(self):
-        #Obtiene la IP local del usuario
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect(("8.8.8.8", 80))
@@ -54,17 +52,14 @@ class FirewallApp:
             return "127.0.0.1"
         
     def setup_ui(self):
-        #Configura la interfaz de usuario
         self.root.grid_columnconfigure(0, weight=1)
         self.root.grid_rowconfigure(1, weight=1)
         
         btn_colors = widget_colors.get("button", {})
         
-        # Frame de opciones
         self.options_frame = customtkinter.CTkFrame(self.root)
         self.options_frame.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
         
-        # Botón Iniciar Sesión
         self.login_button = customtkinter.CTkButton(
             self.options_frame,
             text="Iniciar Sesion",
@@ -75,7 +70,6 @@ class FirewallApp:
         )
         self.login_button.pack(pady=8, padx=20, fill="x")
         
-        # Botón Ver Mis Datos
         self.mis_datos_button = customtkinter.CTkButton(
             self.options_frame,
             text="Ver Mis Datos",
@@ -84,8 +78,7 @@ class FirewallApp:
             hover_color=btn_colors.get("hover_color", None),
             text_color=btn_colors.get("text_color", None),
         )
-        
-        # Botón Notificaciones IP
+
         self.notificaciones_button = customtkinter.CTkButton(
             self.options_frame,
             text="Notificaciones de Red",
@@ -94,11 +87,10 @@ class FirewallApp:
             hover_color=btn_colors.get("hover_color", None),
             text_color=btn_colors.get("text_color", None),
         )
-        # Guardar texto base del botón para poder mostrar/ocultar un "badge"
+
         self._notificaciones_base_text = "Notificaciones de Red"
         self._notificaciones_badge_active = False
         
-        # Botón Solicitar Acceso IP
         self.solicitar_ip_button = customtkinter.CTkButton(
             self.options_frame,
             text="Solicitar Acceso de Red",
@@ -108,7 +100,6 @@ class FirewallApp:
             text_color=btn_colors.get("text_color", None),
         )
         
-        # Botón Alertas
         self.alertas_button = customtkinter.CTkButton(
             self.options_frame,
             text="Ver Alertas",
@@ -118,7 +109,6 @@ class FirewallApp:
             text_color=btn_colors.get("text_color", None),
         )
         
-        # Botón Logs
         self.logs_button = customtkinter.CTkButton(
             self.options_frame,
             text="Ver Logs",
@@ -128,7 +118,6 @@ class FirewallApp:
             text_color=btn_colors.get("text_color", None),
         )
         
-        # Botón Usuarios
         self.usuarios_button = customtkinter.CTkButton(
             self.options_frame,
             text="Gestionar Usuarios",
@@ -138,7 +127,6 @@ class FirewallApp:
             text_color=btn_colors.get("text_color", None),
         )
         
-        # Botón Gestión de IPs
         self.ip_management_button = customtkinter.CTkButton(
             self.options_frame,
             text="Gestionar IPs",
@@ -148,7 +136,6 @@ class FirewallApp:
             text_color=btn_colors.get("text_color", None),
         )
         
-        # Botón Reportes
         self.reportes_button = customtkinter.CTkButton(
             self.options_frame,
             text="Ver Reportes",
@@ -157,12 +144,10 @@ class FirewallApp:
             hover_color=btn_colors.get("hover_color", None),
             text_color=btn_colors.get("text_color", None),
         )
-        
-        # Área de resultados
+
         self.result_frame = customtkinter.CTkScrollableFrame(self.root, height=300)
         self.result_frame.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
         
-        # Footer
         footer_colors = widget_colors.get("footer", {})
         self.status_var = customtkinter.StringVar(value="Conectando...")
         self.footer = customtkinter.CTkFrame(
@@ -191,7 +176,6 @@ class FirewallApp:
         self.user_label.pack(side="right", padx=8)
         
     def auto_connect_guest(self):
-        #Conecta automáticamente como invitado al iniciar
         self.db = DatabaseConnection()
         if self.db.connect(user='rol_invitado', password='esfing3'):
             self.current_role = "invitado"
@@ -204,10 +188,8 @@ class FirewallApp:
             self.status_var.set("Error de conexion")
             
     def check_ip_status(self):
-        #Verifica si la IP del usuario está registrada en el sistema
         if not self.db:
             return
-            
         try:
             query = "SELECT id_ip, estado FROM IPs WHERE direccion_ip = %s"
             result = self.db.fetch_data(query, (self.user_ip,))
@@ -215,22 +197,18 @@ class FirewallApp:
             if not result or len(result) == 0:
                 self.ip_unregistered = True
                 self.create_ip_notification()
-                # Activar badge en el botón de Notificaciones cuando la IP no está registrada
                 self.set_notificaciones_alert(True)
             elif result[0]['estado'] in ['Bloqueada', 'Maliciosa']:
                 self.ip_unregistered = False
                 InvitadoView.show_blocked_message(self)
-                # Mantener badge desactivado para estados diferentes a "no registrada"
                 self.set_notificaciones_alert(False)
             else:
-                # IP registrada: desactivar badge si estaba activo
                 self.ip_unregistered = False
                 self.set_notificaciones_alert(False)
         except Exception as e:
             print(f"Error verificando IP: {e}")
     
     def create_ip_notification(self):
-        #Crea una notificación para IP no registrada
         if self.db:
             try:
                 query = """
@@ -238,15 +216,12 @@ class FirewallApp:
                     VALUES (%s, NOW(), 'Media', 'Pendiente', NULL)
                 """
                 self.db.execute_query(query, (f'IP no registrada: {self.user_ip}',))
-                # Asegurar badge activo cuando se crea una alerta por IP no registrada
                 self.ip_unregistered = True
                 self.set_notificaciones_alert(True)
             except Exception as e:
                 print(f"Error creando notificacion: {e}")
 
     def set_notificaciones_alert(self, active: bool):
-        #Muestra/oculta un pequeño símbolo de alerta en el botón de Notificaciones.
-        #active: True para mostrar el símbolo de alerta, False para ocultarlo.
         try:
             if active and not self._notificaciones_badge_active:
                 self.notificaciones_button.configure(text=f"{self._notificaciones_base_text} ⚠")
@@ -255,11 +230,9 @@ class FirewallApp:
                 self.notificaciones_button.configure(text=self._notificaciones_base_text)
                 self._notificaciones_badge_active = False
         except Exception:
-            # No bloquear la app si por alguna razón no se puede actualizar el botón
             pass
     
     def show_login_dialog(self):
-        #Muestra el diálogo de login
         if self.current_role != "invitado" or self.usuario_id:
             self.logout()
             return
@@ -332,7 +305,6 @@ class FirewallApp:
         
     def authenticate_user(self, username: str, password: str) -> bool:
         
-        #Autentica un usuario contra la base de datos
         temp_db = DatabaseConnection()
         if not temp_db.connect(user='rol_invitado', password='esfing3'):
             return False
@@ -401,7 +373,6 @@ class FirewallApp:
         return False
     
     def update_ui_permissions(self):
-        #Actualiza la UI según los permisos del rol actual
         self.mis_datos_button.pack_forget()
         self.notificaciones_button.pack_forget()
         self.solicitar_ip_button.pack_forget()
@@ -435,10 +406,8 @@ class FirewallApp:
             else:
                 self.login_button.configure(text="Iniciar Sesion")
                 self.notificaciones_button.pack(pady=8, padx=20, fill="x")
-                # El botón de solicitud se mostrará dentro del panel de notificaciones
     
     def logout(self):
-        #Cierra sesión y vuelve a modo invitado
         if self.db:
             self.db.disconnect()
         
@@ -455,47 +424,35 @@ class FirewallApp:
             font=("Arial", 14)
         )
         logout_label.pack(pady=20)
-    
-    # Invitado 
+
     def show_notificaciones(self):
-        #Muestra notificaciones de red para el usuario
         InvitadoView.show_notificaciones(self)
     
     def solicitar_acceso_ip(self):
-        #Solicita acceso para la IP del usuario
         InvitadoView.solicitar_acceso_ip(self)
     
     def show_mis_datos(self):
-        #Muestra los datos del usuario actual
         InvitadoView.show_mis_datos(self)
     
-    # Analista 
     def show_alertas(self):
-        #Muestra las alertas del sistema
         if self.current_role == "admin":
             AdminView.show_alertas_admin(self)
         else:
             AnalistaView.show_alertas(self)
     
     def show_logs(self):
-        #Muestra los logs del firewall
         AnalistaView.show_logs(self)
     
     def show_reportes(self):
-        #Muestra los reportes del sistema
         AnalistaView.show_reportes(self)
     
-    # Admin 
     def show_usuarios(self):
-        #Muestra los usuarios del sistema (solo admin)
         AdminView.show_usuarios(self)
     
     def show_ip_management(self):
-        #Muestra la gestión completa de IPs (solo admin)
         AdminView.show_ip_management(self)
     
     def on_closing(self):
-        #Cierra la aplicación correctamente
         if self.db:
             self.db.disconnect()
         self.root.destroy()
