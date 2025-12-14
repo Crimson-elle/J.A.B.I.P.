@@ -4,7 +4,7 @@
 
 El Sistema de Gestión de Seguridad de Firewall (SGS-AF) es una aplicación de escritorio diseñada para simular la gestión de eventos de seguridad de un entorno de red. Su objetivo principal es centralizar la ingesta de logs simulados de un firewall, permitiendo a los equipos de seguridad analizar incidentes, gestionar alertas y aplicar control de acceso estricto a la información sensible.
 
-El proyecto demuestra una arquitectura completa que abarca la interfaz de usuario, la lógica de la aplicación y una robusta capa de seguridad en la base de datos.
+El proyecto demuestra una arquitectura completa que abarca la interfaz de usuario, la lógica de la aplicación y una robusta capa de seguridad en la base de datos. El repositorio de Git Hub es el siguiente: https://github.com/Crimson-elle/J.A.B.I.P.
 
 ## Tecnologías clave
 
