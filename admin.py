@@ -2,10 +2,8 @@ import customtkinter
 import tkinter as tk
 
 class AdminView:
-    
     @staticmethod
     def show_usuarios(app):
-        #Muestra los usuarios del sistema (solo admin)
         if not app.db:
             return
             
@@ -52,7 +50,6 @@ class AdminView:
     
     @staticmethod
     def show_alertas_admin(app):
-        #Muestra las alertas del sistema con funcionalidad de gestión de IPs para administradores
         if not app.db:
             return
             
@@ -62,7 +59,6 @@ class AdminView:
         app.status_var.set("Cargando alertas...")
         
         try:
-            # Consulta para obtener alertas relacionadas con solicitudes de IP
             query = """
                 SELECT a.id_alerta, a.tipo_alerta, a.gravedad, a.estado, 
                     a.fecha_alerta, u.nombre_usuario as analista
@@ -92,11 +88,9 @@ class AdminView:
                 return
             
             for alerta in alertas:
-                # Frame contenedor para cada alerta
                 alert_frame = customtkinter.CTkFrame(app.result_frame)
                 alert_frame.pack(pady=5, padx=10, fill="x")
                 
-                # Información de la alerta
                 alert_text = f"#{alerta['id_alerta']} - {alerta['tipo_alerta']}\n" \
                         f"Gravedad: {alerta['gravedad']} | Estado: {alerta['estado']} | " \
                         f"Fecha: {alerta['fecha_alerta']}"
@@ -110,11 +104,9 @@ class AdminView:
                 )
                 info_label.pack(pady=5, padx=10, fill="x")
                 
-                # Extraer IP de la descripción de la alerta si existe
                 ip_address = AdminView._extract_ip_from_alert(alerta['tipo_alerta'])
                 
                 if ip_address and alerta['estado'] == 'Pendiente':
-                    # Frame para botones de acción
                     button_frame = customtkinter.CTkFrame(alert_frame)
                     button_frame.pack(pady=5, padx=10, fill="x")
                     
@@ -125,7 +117,6 @@ class AdminView:
                     )
                     ip_label.pack(side="left", padx=5)
                     
-                    # Botón para permitir IP
                     allow_btn = customtkinter.CTkButton(
                         button_frame,
                         text="✓ Permitir IP",
@@ -138,8 +129,7 @@ class AdminView:
                         text_color="black"
                     )
                     allow_btn.pack(side="right", padx=2)
-                    
-                    # Botón para bloquear IP
+
                     block_btn = customtkinter.CTkButton(
                         button_frame,
                         text="✗ Bloquear IP",
@@ -152,8 +142,7 @@ class AdminView:
                         text_color="black"
                     )
                     block_btn.pack(side="right", padx=2)
-                    
-                    # Botón para marcar como sospechosa
+
                     suspect_btn = customtkinter.CTkButton(
                         button_frame,
                         text="? Sospechosa",
@@ -180,7 +169,6 @@ class AdminView:
     def _extract_ip_from_alert(alert_text):
         """Extrae la dirección IP del texto de la alerta"""
         import re
-        # Buscar patrón de IP en el texto
         ip_pattern = r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b'
         match = re.search(ip_pattern, alert_text)
         return match.group() if match else None
@@ -192,23 +180,19 @@ class AdminView:
             return
             
         try:
-            # Verificar si la IP ya existe en el sistema
             check_query = "SELECT id_ip, estado FROM IPs WHERE direccion_ip = %s"
             existing_ip = app.db.fetch_data(check_query, (ip_address,))
             
             if existing_ip:
-                # La IP ya existe, actualizar su estado usando el stored procedure
                 sp_query = "CALL SP_CambiarEstadoIP(%s, %s, %s)"
                 success = app.db.execute_query(sp_query, (ip_address, new_status, app.usuario_id))
             else:
-                # La IP no existe, crearla con el estado especificado
                 insert_query = """
                     INSERT INTO IPs (direccion_ip, estado, fecha_ultimo_visto, id_dispositivo)
                     VALUES (%s, %s, NOW(), NULL)
                 """
                 success = app.db.execute_query(insert_query, (ip_address, new_status))
                 
-                # Registrar en auditoría
                 audit_query = """
                     INSERT INTO Auditoria (fecha, tabla_afectada, accion_realizada, detalle, id_usuario_sistema)
                     VALUES (NOW(), 'IPs', 'INSERT_NEW_IP', %s, %s)
@@ -217,7 +201,6 @@ class AdminView:
                 app.db.execute_query(audit_query, (audit_detail, app.usuario_id))
             
             if success:
-                # Cerrar la alerta
                 close_alert_query = """
                     UPDATE Alertas 
                     SET estado = 'Cerrada', id_analista_asignado = %s 
@@ -225,15 +208,13 @@ class AdminView:
                 """
                 app.db.execute_query(close_alert_query, (app.usuario_id, alert_id))
                 
-                # Mostrar mensaje de éxito
                 status_messages = {
                     "Confiable": "IP permitida correctamente",
                     "Maliciosa": "IP bloqueada correctamente", 
                     "Sospechosa": "IP marcada como sospechosa"
                 }
                 app.status_var.set(f"{status_messages.get(new_status, 'Acción completada')} - {ip_address}")
-                
-                # Recargar las alertas
+
                 AdminView.show_alertas_admin(app)
             else:
                 app.status_var.set(f"Error al procesar IP {ip_address}")
@@ -259,8 +240,7 @@ class AdminView:
                 font=("Arial", 16, "bold")
             )
             title.pack(pady=10)
-            
-            # Frame para búsqueda manual
+
             search_frame = customtkinter.CTkFrame(app.result_frame)
             search_frame.pack(pady=10, padx=10, fill="x")
             
@@ -270,16 +250,14 @@ class AdminView:
                 font=("Arial", 12, "bold")
             )
             search_label.pack(pady=5)
-            
-            # Entry para ingresar IP
+
             ip_entry = customtkinter.CTkEntry(
                 search_frame,
                 placeholder_text="Ej: 192.168.1.100",
                 width=200
             )
             ip_entry.pack(pady=5)
-            
-            # Frame para botones de acción manual
+
             manual_buttons_frame = customtkinter.CTkFrame(search_frame)
             manual_buttons_frame.pack(pady=5)
             
@@ -315,8 +293,7 @@ class AdminView:
                 text_color="black"
             )
             block_manual_btn.pack(side="left", padx=5)
-            
-            # Mostrar IPs existentes
+
             separator = customtkinter.CTkLabel(
                 app.result_frame,
                 text="─" * 50,
@@ -330,8 +307,7 @@ class AdminView:
                 font=("Arial", 14, "bold")
             )
             ips_title.pack(pady=5)
-            
-            # Consultar IPs
+
             query = """
                 SELECT i.direccion_ip, i.estado, i.fecha_ultimo_visto, d.nombre_activo
                 FROM IPs i
@@ -350,8 +326,7 @@ class AdminView:
             for ip in ips:
                 ip_frame = customtkinter.CTkFrame(app.result_frame)
                 ip_frame.pack(pady=2, padx=10, fill="x")
-                
-                # Color según estado
+
                 color_map = {
                     "Maliciosa": "#ff6b6b",
                     "Sospechosa": "#ffd43b", 
@@ -390,8 +365,7 @@ class AdminView:
             return
             
         ip_address = ip_address.strip()
-        
-        # Validar formato básico de IP
+
         import re
         ip_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
         if not re.match(ip_pattern, ip_address):
@@ -399,3 +373,4 @@ class AdminView:
             return
             
         AdminView._handle_ip_action(app, ip_address, new_status, None)
+
