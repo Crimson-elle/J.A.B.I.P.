@@ -4,7 +4,6 @@ class AnalistaView:
     
     @staticmethod
     def show_alertas(app):
-        #Muestra las alertas del sistema
         if not app.db:
             return
             
@@ -54,7 +53,6 @@ class AnalistaView:
     
     @staticmethod
     def show_logs(app):
-        #Muestra los logs del firewall
         if not app.db:
             return
             
@@ -106,7 +104,6 @@ class AnalistaView:
     
     @staticmethod
     def show_reportes(app):
-        #Muestra los reportes del sistema
         if not app.db:
             return
             
@@ -151,3 +148,4 @@ class AnalistaView:
                 text_color="red"
             )
             error_label.pack(pady=20)
+
